@@ -1,0 +1,43 @@
+name: Random empty commit
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 9 * * 1"
+
+permissions:
+  contents: write
+
+jobs:
+  empty-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create a random empty technical commit
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          descriptions=(
+            "refine runtime metadata synchronization"
+            "stabilize cross-platform diagnostics pipeline"
+            "tune asynchronous resource lifecycle coordination"
+            "improve incremental build graph consistency"
+            "validate platform abstraction boundaries"
+            "refresh native interop maintenance cadence"
+            "align deployment telemetry schema evolution"
+          )
+
+          index=$((RANDOM % ${#descriptions[@]}))
+          description="${descriptions[$index]}"
+          commit_message="chore: ${description}"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git commit --allow-empty -m "$commit_message"
+          git push origin HEAD:master
